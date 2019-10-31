@@ -522,7 +522,28 @@ function IIfA:UpdateTooltip(tooltip)
 					if location.name == nil or location.itemsFound == nil then
 						textOut = 'Error occurred'
 					else
-						textOut = zo_strformat("<<1>> x <<2>>", location.name, location.itemsFound)
+						local traitName = EsoStrings[_G["SI_ITEMTRAITTYPE" .. location.trait]]
+						if location.quality ~= nil then
+							local traitColor = "|ceeca2a"
+							if location.quality == 1 then
+								traitColor = "|ceeeeee"
+							elseif location.quality == 2 then
+								traitColor = "|c2dc50e"
+							elseif location.quality == 3 then
+								traitColor = "|c327edc"
+							elseif location.quality == 4 then
+								traitColor = "|ca02cf7"
+							elseif location.quality > 4 then
+								traitColor = "|ceeca2a"
+							end
+							if location.quality > 0 then
+								textOut = zo_strformat(traitColor .. "<<1>> (<<2>>) x <<3>>|r", location.name, traitName, location.itemsFound)
+							else
+								textOut = zo_strformat("|caaaaaa <<1>> x <<2>>|r", location.name, location.itemsFound)
+							end
+						else
+							textOut = zo_strformat("<<1>> x <<2>>", location.name, location.itemsFound)
+						end
 					end
   					if location.worn then
 						textOut = string.format("%s *", textOut)

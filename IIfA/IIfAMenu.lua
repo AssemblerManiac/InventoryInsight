@@ -147,6 +147,7 @@ function IIfA:CreateOptionsMenu()
 					tooltip = "Deletes all collected data",
 					func = function()
 						IIfA.database = {}
+						IIfA.database_index = {}
 						IIfA:ScanCurrentCharacterAndBank()
 						IIfA:RefreshInventoryScroll()
 					end,
@@ -169,6 +170,20 @@ function IIfA:CreateOptionsMenu()
 					name = "Delete Character",
 					tooltip = "Delete Inventory Insight data for the character selected above",
 					func = function() IIfA:DeleteCharacterData(deleteChar) end,
+				}, -- button end
+
+				{
+					type = "divider",
+				},
+
+				{  -- button begin
+					type = "button",
+					name = "Reload character",
+					tooltip = "Reloads current character",
+					func = function()
+						IIfA:ScanCurrentCharacterAndBank()
+						IIfA:RefreshInventoryScroll()
+					end,
 				}, -- button end
 
 				{

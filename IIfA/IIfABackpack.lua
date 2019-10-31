@@ -685,51 +685,60 @@ function IIfA:QueryAccountInventory(itemLink)
 	local newLocation = {}
 	local itemCount = 0
 
-	itemLink = IIfA:GetItemKey(itemLink)
+	local indexKey = GetItemLinkName(itemLink)
+	local itemsInDbWithThisKey = IIfA.database_index[indexKey]
 
-	local item = IIfA.database[itemLink]
-
-	if ((queryItem.link ~= nil) and (item ~= nil)) then
-		for locationName, location in pairs(item.locations) do
-			itemCount = itemSum(location)
-			AlreadySavedLoc = false
-			if location.bagID == BAG_WORN or location.bagID == BAG_BACKPACK then
-				locationName = IIfA.CharIdToName[locationName]
-			end
-			if locationName ~= nil then
-				for x, QILocation in pairs(queryItem.locations) do
-					if (QILocation.name == locationName)then
-						QILocation.itemsFound = QILocation.itemsFound + itemCount
-						AlreadySavedLoc = true
+	if (itemsInDbWithThisKey ~= nil) then
+		for itemLink,_ in pairs(itemsInDbWithThisKey) do
+			local item = IIfA.database[itemLink]
+			if ((queryItem.link ~= nil) and (item ~= nil)) then
+				for locationName, location in pairs(item.locations) do
+					itemCount = itemSum(location)
+					local itemQuality = GetItemLinkQuality(itemLink)
+					local itemTrait = GetItemLinkTraitType(itemLink)
+					AlreadySavedLoc = false
+					if location.bagID == BAG_WORN or location.bagID == BAG_BACKPACK then
+						locationName = IIfA.CharIdToName[locationName]
 					end
-				end
 
-				if itemCount ~= nil and itemCount > 0 then
-					if (not AlreadySavedLoc) and (itemCount > 0) then
-						newLocation = {}
-						newLocation.name = locationName
-
-						if location.bagID == BAG_WORN or location.bagID == BAG_BACKPACK then
-							newLocation.bagLoc = BAG_BACKPACK
-						elseif location.bagID == BAG_BANK or location.bagID == BAG_SUBSCRIBER_BANK then
-							newLocation.bagLoc = BAG_BANK
-						elseif location.bagID == BAG_VIRTUAL then
-							newLocation.bagLoc = BAG_VIRTUAL
-						elseif location.bagID == BAG_GUILDBANK then
-							newLocation.bagLoc = BAG_GUILDBANK
-						elseif location.bagID >= BAG_HOUSE_BANK_ONE and location.bagID <= BAG_HOUSE_BANK_TEN then -- location is a housing chest
-							newLocation.name = GetCollectibleNickname(locationName * 1)
-							if newLocation.name == IIfA.EMPTY_STRING then newLocation.name = GetCollectibleName(locationName) end
-							newLocation.bagLoc = BAG_HOUSE_BANK_ONE
-						elseif location.bagID == locationName then	-- location is a house
-							newLocation.name = GetCollectibleName(locationName * 1)
-							newLocation.bagLoc = 99
+					if locationName ~= nil then
+						for x, QILocation in pairs(queryItem.locations) do
+							if (QILocation.name == locationName and QILocation.quality == itemQuality and QILocation.trait == itemTrait) then
+								QILocation.itemsFound = QILocation.itemsFound + itemCount
+								AlreadySavedLoc = true
+							end
 						end
 
-						newLocation.itemsFound = itemCount
-						newLocation.worn = location.bagID == BAG_WORN
+						if itemCount ~= nil and itemCount > 0 then
+							if (not AlreadySavedLoc) and (itemCount > 0) then
+								newLocation = {}
+								newLocation.name = locationName
 
-						table.insert(queryItem.locations, newLocation)
+								if location.bagID == BAG_WORN or location.bagID == BAG_BACKPACK then
+									newLocation.bagLoc = BAG_BACKPACK
+								elseif location.bagID == BAG_BANK or location.bagID == BAG_SUBSCRIBER_BANK then
+									newLocation.bagLoc = BAG_BANK
+								elseif location.bagID == BAG_VIRTUAL then
+									newLocation.bagLoc = BAG_VIRTUAL
+								elseif location.bagID == BAG_GUILDBANK then
+									newLocation.bagLoc = BAG_GUILDBANK
+								elseif location.bagID >= BAG_HOUSE_BANK_ONE and location.bagID <= BAG_HOUSE_BANK_TEN then -- location is a housing chest
+									newLocation.name = GetCollectibleNickname(locationName * 1)
+									if newLocation.name == IIfA.EMPTY_STRING then newLocation.name = GetCollectibleName(locationName) end
+									newLocation.bagLoc = BAG_HOUSE_BANK_ONE
+								elseif location.bagID == locationName then	-- location is a house
+									newLocation.name = GetCollectibleName(locationName * 1)
+									newLocation.bagLoc = 99
+								end
+
+								newLocation.itemsFound = itemCount
+								newLocation.worn = location.bagID == BAG_WORN
+								newLocation.trait = itemTrait
+								newLocation.quality = itemQuality
+
+								table.insert(queryItem.locations, newLocation)
+							end
+						end
 					end
 				end
 			end
