@@ -537,7 +537,7 @@ function IIfA:UpdateTooltip(tooltip)
 								traitColor = "|ceeca2a"
 							end
 							if location.quality > 0 then
-								textOut = zo_strformat(traitColor .. "<<1>> (<<2>>) x <<3>>|r", location.name, traitName, location.itemsFound)
+								textOut = zo_strformat("<<1>> <<2>>(<<3>>) x <<4>>|r", location.name, traitColor, traitName, location.itemsFound)
 							else
 								textOut = zo_strformat("|caaaaaa <<1>> x <<2>>|r", location.name, location.itemsFound)
 							end

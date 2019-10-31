@@ -496,6 +496,9 @@ function IIfA:EvalBagItem(bagId, slotId, fromXfer, qty, itemLink, itemName, loca
 			end
 		else
 			DBv3idx[indexKey] = {}
+            if bagId ~= BAG_VIRTUAL then
+                DBv3idx[indexKey][itemKey] = true
+            end
 		end
 	end
 
