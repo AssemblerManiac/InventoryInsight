@@ -437,6 +437,9 @@ function IIfA_onLoad(eventCode, addOnName)
 	if IIfA.data[worldName].DBv3 == nil then
 		 IIfA.data[worldName].DBv3 = IIfA.data.DBv3
 	end
+	if IIfA.data[worldName].DBv3idx == nil then
+		 IIfA.data[worldName].DBv3idx = IIfA.data.DBv3idx
+	end
 	IIfA.data.DBv3 = nil
 	IIfA.data.DBv3idx = nil
 	IIfA.database = IIfA.data[worldName].DBv3
