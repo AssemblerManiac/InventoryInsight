@@ -263,6 +263,7 @@ function IIfA_onLoad(eventCode, addOnName)
 		in2TooltipsFontSize 			= 16,
 		ShowToolTipWhen 				= "Always",
 		DBv3 							= {},
+		DBv3idx                         = {},
 		dontFocusSearch					= false,
 		bAddContextMenuEntrySearchInIIfA = true,
 	}
@@ -436,9 +437,14 @@ function IIfA_onLoad(eventCode, addOnName)
 	if IIfA.data[worldName].DBv3 == nil then
 		 IIfA.data[worldName].DBv3 = IIfA.data.DBv3
 	end
+	if IIfA.data[worldName].DBv3idx == nil then
+		 IIfA.data[worldName].DBv3idx = IIfA.data.DBv3idx
+	end
 	IIfA.data.DBv3 = nil
+	IIfA.data.DBv3idx = nil
 	IIfA.database = IIfA.data[worldName].DBv3
-
+	IIfA.database_index = IIfA.data[worldName].DBv3idx
+	
 	-- 2018-10-11 AM - guildBanks now tracked individually per server (NA or EU)
 	IIfA:SetupGuildBanks(worldName)
 

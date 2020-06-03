@@ -439,7 +439,9 @@ function IIfA:EvalBagItem(bagId, slotId, fromXfer, qty, itemLink, itemName, loca
 	if not IIfA.trackedBags[bagId] then return end
 
 	IIfA.database = IIfA.database or {}
+	IIfA.database_index = IIfA.database_index or {}
 	local DBv3 = IIfA.database
+	local DBv3idx = IIfA.database_index
 
 	-- item link is either passed as arg or we need to read it from the system
 	itemLink = itemLink or GetItemLink(bagId, slotId)
@@ -484,6 +486,21 @@ function IIfA:EvalBagItem(bagId, slotId, fromXfer, qty, itemLink, itemName, loca
 	end
 
 	if nil == itemKey then return end
+
+	-- index by name to display list of all items with same name (but different trait/quality) in tooltip
+	local indexKey = itemName
+    if (itemName ~= nil) then
+		if (DBv3idx[indexKey] ~= nil) then
+			if bagId ~= BAG_VIRTUAL then
+				DBv3idx[indexKey][itemKey] = true
+			end
+		else
+			DBv3idx[indexKey] = {}
+            if bagId ~= BAG_VIRTUAL then
+                DBv3idx[indexKey][itemKey] = true
+            end
+		end
+	end
 
 	local itemFilterType = GetItemFilterTypeInfo(bagId, slotId) or 0
 	local DBitem = DBv3[itemKey]
